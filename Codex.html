@@ -1,0 +1,4776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description"
+content="CODEX: The Encyclopedia of Code — programming explained from first principles.">
+
+<title>CODEX: The Encyclopedia of Code | Nelson Atelier</title>
+
+<style>
+
+/* =========================================================
+   CODEX — THE ENCYCLOPEDIA OF CODE
+   Single-file edition
+   ========================================================= */
+
+:root {
+    --indigo: #263BAA;
+    --deep-indigo: #17256F;
+    --soft-indigo: #5364C7;
+
+    --ink: #171A24;
+    --slate: #687080;
+
+    --vanilla: #FFF4D6;
+    --cream: #FFF9EA;
+    --white: #FFFFFF;
+
+    --line: rgba(23, 26, 36, 0.12);
+
+    --shadow-sm: 0 8px 25px rgba(23, 26, 36, 0.07);
+    --shadow-lg: 0 25px 70px rgba(23, 26, 36, 0.13);
+
+    --radius: 20px;
+
+    --ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family:
+        Inter,
+        Manrope,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background: var(--vanilla);
+    color: var(--ink);
+
+    line-height: 1.65;
+
+    overflow-x: hidden;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+::selection {
+    background: var(--indigo);
+    color: white;
+}
+
+
+/* =========================================================
+   LOADER
+   ========================================================= */
+
+.loader {
+    position: fixed;
+    inset: 0;
+
+    background: var(--ink);
+
+    display: grid;
+    place-items: center;
+
+    z-index: 9999;
+
+    transition:
+        opacity .7s var(--ease),
+        visibility .7s var(--ease);
+}
+
+.loader.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-content {
+    text-align: center;
+    color: white;
+}
+
+.loader-circle {
+    width: 64px;
+    height: 64px;
+
+    border: 3px solid rgba(255,255,255,.12);
+    border-top-color: var(--vanilla);
+    border-right-color: var(--indigo);
+
+    border-radius: 50%;
+
+    animation: spin 1s linear infinite;
+
+    margin: auto auto 18px;
+}
+
+.loader-text {
+    font-size: .75rem;
+    font-weight: 900;
+    letter-spacing: .18em;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header {
+    position: sticky;
+    top: 0;
+
+    z-index: 1000;
+
+    background: rgba(255,244,214,.88);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-bottom: 1px solid var(--line);
+
+    transition:
+        box-shadow .4s var(--ease),
+        background .4s var(--ease);
+}
+
+header.scrolled {
+    box-shadow: 0 10px 35px rgba(23,26,36,.09);
+}
+
+.nav {
+    max-width: 1200px;
+
+    min-height: 76px;
+
+    margin: auto;
+
+    padding: 0 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+}
+
+.logo {
+    font-size: 1.5rem;
+
+    font-weight: 950;
+
+    letter-spacing: -.06em;
+
+    color: var(--deep-indigo);
+}
+
+.logo span {
+    color: var(--indigo);
+}
+
+.nav-links {
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+}
+
+.nav-links a {
+    padding: 10px 13px;
+
+    border-radius: 12px;
+
+    font-size: .88rem;
+
+    font-weight: 750;
+
+    color: #454b58;
+
+    transition:
+        color .3s var(--ease),
+        background .3s var(--ease),
+        transform .3s var(--ease);
+}
+
+.nav-links a:hover {
+    background: white;
+
+    color: var(--indigo);
+
+    transform: translateY(-2px);
+}
+
+.menu-button {
+    display: none;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 1.6rem;
+
+    color: var(--ink);
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+    min-height: calc(100vh - 76px);
+
+    display: grid;
+
+    place-items: center;
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 90px 24px 110px;
+}
+
+.hero-grid {
+    position: absolute;
+
+    inset: 0;
+
+    opacity: .4;
+
+    background-image:
+        linear-gradient(
+            rgba(38,59,170,.055) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(38,59,170,.055) 1px,
+            transparent 1px
+        );
+
+    background-size: 42px 42px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent 90%
+        );
+}
+
+.hero-glow {
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    border-radius: 50%;
+
+    background: rgba(38,59,170,.10);
+
+    filter: blur(5px);
+
+    top: -200px;
+    right: -150px;
+}
+
+.hero-glow-two {
+    position: absolute;
+
+    width: 350px;
+    height: 350px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.75);
+
+    bottom: -180px;
+    left: -120px;
+}
+
+.hero-content {
+    max-width: 1000px;
+
+    text-align: center;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 8px 14px;
+
+    border: 1px solid rgba(38,59,170,.18);
+
+    background: rgba(255,255,255,.6);
+
+    border-radius: 999px;
+
+    color: var(--indigo);
+
+    font-size: .75rem;
+
+    font-weight: 900;
+
+    letter-spacing: .09em;
+
+    text-transform: uppercase;
+
+    animation: heroUp .9s var(--ease) both;
+}
+
+.badge-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--indigo);
+
+    box-shadow:
+        0 0 0 6px rgba(38,59,170,.1);
+}
+
+.hero h1 {
+    margin: 27px auto 12px;
+
+    max-width: 950px;
+
+    font-size: clamp(2.7rem, 7vw, 6.5rem);
+
+    line-height: .94;
+
+    letter-spacing: -.075em;
+
+    font-weight: 950;
+
+    animation: heroUp 1s .08s var(--ease) both;
+}
+
+.hero h1 span {
+    color: var(--indigo);
+}
+
+.subtitle {
+    color: var(--slate);
+
+    font-size: clamp(1rem, 2vw, 1.25rem);
+
+    font-weight: 750;
+
+    animation: heroUp 1s .16s var(--ease) both;
+}
+
+.creator {
+    color: var(--indigo);
+
+    font-weight: 900;
+
+    margin-top: 4px;
+
+    animation: heroUp 1s .2s var(--ease) both;
+}
+
+.hero-description {
+    max-width: 670px;
+
+    margin: 23px auto 31px;
+
+    color: #596170;
+
+    animation: heroUp 1s .26s var(--ease) both;
+}
+
+@keyframes heroUp {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.search-container {
+    max-width: 770px;
+
+    margin: auto;
+
+    animation:
+        heroUp 1s .33s var(--ease) both;
+}
+
+.search-box {
+    display: flex;
+
+    align-items: center;
+
+    background: white;
+
+    border: 1px solid var(--line);
+
+    border-radius: 17px;
+
+    padding: 7px;
+
+    box-shadow: var(--shadow-lg);
+
+    transition:
+        transform .4s var(--ease),
+        box-shadow .4s var(--ease),
+        border-color .3s;
+}
+
+.search-box:focus-within {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 30px 70px rgba(23,26,36,.15);
+
+    border-color:
+        rgba(38,59,170,.35);
+}
+
+.search-box input {
+    flex: 1;
+
+    min-width: 0;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    padding: 15px;
+
+    color: var(--ink);
+
+    font-size: 1rem;
+}
+
+.search-button {
+    border: none;
+
+    background: var(--indigo);
+
+    color: white;
+
+    font-weight: 850;
+
+    padding: 14px 20px;
+
+    border-radius: 12px;
+
+    transition:
+        transform .3s var(--ease),
+        background .3s var(--ease),
+        box-shadow .3s var(--ease);
+}
+
+.search-button:hover {
+    background: var(--deep-indigo);
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 28px rgba(38,59,170,.25);
+}
+
+.quick-searches {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 14px;
+}
+
+.quick-searches button {
+    border: 1px solid var(--line);
+
+    background: rgba(255,255,255,.58);
+
+    color: var(--slate);
+
+    padding: 7px 12px;
+
+    border-radius: 999px;
+
+    font-size: .78rem;
+
+    font-weight: 750;
+
+    transition:
+        all .3s var(--ease);
+}
+
+.quick-searches button:hover {
+    background: white;
+
+    color: var(--indigo);
+
+    transform: translateY(-3px);
+}
+
+
+/* =========================================================
+   SEARCH RESULTS
+   ========================================================= */
+
+.search-results {
+    max-width: 1180px;
+
+    margin: -45px auto 0;
+
+    padding: 0 24px 20px;
+
+    position: relative;
+
+    z-index: 20;
+}
+
+.results-box {
+    background: white;
+
+    border: 1px solid var(--line);
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    box-shadow: var(--shadow-lg);
+
+    animation:
+        resultsIn .45s var(--ease);
+}
+
+@keyframes resultsIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(-12px)
+            scale(.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+.result {
+    padding: 14px;
+
+    border-radius: 12px;
+
+    transition:
+        background .25s,
+        transform .25s var(--ease);
+}
+
+.result:hover {
+    background: var(--cream);
+
+    transform: translateX(5px);
+}
+
+.result strong {
+    color: var(--indigo);
+}
+
+.result small {
+    display: block;
+
+    color: var(--slate);
+}
+
+
+/* =========================================================
+   GENERAL SECTIONS
+   ========================================================= */
+
+section {
+    padding: 100px 24px;
+}
+
+.container {
+    max-width: 1180px;
+
+    margin: auto;
+}
+
+.section-header {
+    display: flex;
+
+    align-items: end;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    margin-bottom: 35px;
+}
+
+.kicker {
+    color: var(--indigo);
+
+    font-size: .72rem;
+
+    font-weight: 900;
+
+    text-transform: uppercase;
+
+    letter-spacing: .13em;
+}
+
+.section-header h2 {
+    font-size: clamp(2rem, 4vw, 3.1rem);
+
+    line-height: 1.05;
+
+    letter-spacing: -.06em;
+
+    margin-top: 7px;
+}
+
+.section-header p {
+    max-width: 510px;
+
+    color: var(--slate);
+}
+
+
+/* =========================================================
+   REVEAL ANIMATIONS
+   ========================================================= */
+
+.reveal {
+    opacity: 0;
+
+    transform:
+        translateY(30px);
+
+    transition:
+        opacity .8s var(--ease),
+        transform .8s var(--ease);
+}
+
+.reveal.visible {
+    opacity: 1;
+
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   CONCEPT CARDS
+   ========================================================= */
+
+.concept-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 16px;
+}
+
+.card {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 24px;
+
+    background: rgba(255,255,255,.72);
+
+    border: 1px solid var(--line);
+
+    border-radius: var(--radius);
+
+    transition:
+        transform .45s var(--ease),
+        box-shadow .45s var(--ease),
+        border-color .35s,
+        background .35s;
+}
+
+.card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background: var(--indigo);
+
+    transform:
+        scaleX(0);
+
+    transform-origin: left;
+
+    transition:
+        transform .45s var(--ease);
+}
+
+.card:hover {
+    transform:
+        translateY(-9px);
+
+    background: white;
+
+    border-color:
+        rgba(38,59,170,.2);
+
+    box-shadow:
+        var(--shadow-lg);
+}
+
+.card:hover::before {
+    transform:
+        scaleX(1);
+}
+
+.card-icon {
+    width: 46px;
+    height: 46px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 13px;
+
+    background:
+        rgba(38,59,170,.09);
+
+    color: var(--indigo);
+
+    font-weight: 950;
+
+    margin-bottom: 20px;
+
+    transition:
+        transform .45s var(--ease),
+        background .35s,
+        color .35s;
+}
+
+.card:hover .card-icon {
+    transform:
+        rotate(-6deg)
+        scale(1.08);
+
+    background: var(--indigo);
+
+    color: white;
+}
+
+.card h3 {
+    font-size: 1.15rem;
+
+    margin-bottom: 8px;
+
+    letter-spacing: -.025em;
+}
+
+.card p {
+    color: var(--slate);
+
+    font-size: .9rem;
+}
+
+.card-link {
+    display: inline-block;
+
+    margin-top: 18px;
+
+    color: var(--indigo);
+
+    font-weight: 900;
+
+    border: none;
+
+    background: transparent;
+
+    transition:
+        transform .3s var(--ease);
+}
+
+.card:hover .card-link {
+    transform:
+        translateX(6px);
+}
+
+
+/* =========================================================
+   CATEGORIES
+   ========================================================= */
+
+.categories {
+    background: white;
+}
+
+.category-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 16px;
+}
+
+.category-card {
+    padding: 28px;
+
+    background: var(--cream);
+
+    border: 1px solid var(--line);
+
+    border-radius: 18px;
+
+    transition:
+        transform .4s var(--ease),
+        box-shadow .4s var(--ease),
+        background .35s;
+}
+
+.category-card:hover {
+    transform:
+        translateY(-7px);
+
+    background: white;
+
+    box-shadow:
+        var(--shadow-lg);
+}
+
+.category-number {
+    color: var(--soft-indigo);
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-weight: 900;
+
+    font-size: .78rem;
+
+    margin-bottom: 12px;
+}
+
+.category-card h3 {
+    margin-bottom: 7px;
+}
+
+.category-card p {
+    color: var(--slate);
+
+    font-size: .9rem;
+}
+
+.category-button {
+    margin-top: 18px;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--indigo);
+
+    font-weight: 850;
+
+    transition:
+        transform .3s var(--ease);
+}
+
+.category-button:hover {
+    transform:
+        translateX(5px);
+}
+
+
+/* =========================================================
+   LEARNING PATHS
+   ========================================================= */
+
+.path-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+}
+
+.path-card {
+    min-height: 245px;
+
+    padding: 30px;
+
+    border-radius: 22px;
+
+    color: white;
+
+    background: var(--ink);
+
+    position: relative;
+
+    overflow: hidden;
+
+    transition:
+        transform .45s var(--ease),
+        box-shadow .45s var(--ease);
+}
+
+.path-card:nth-child(2) {
+    background: var(--indigo);
+}
+
+.path-card:nth-child(3) {
+    background: var(--deep-indigo);
+}
+
+.path-card::after {
+    content: "</>";
+
+    position: absolute;
+
+    right: -10px;
+    bottom: -40px;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-size: 8rem;
+
+    font-weight: 900;
+
+    opacity: .08;
+
+    transform:
+        rotate(-8deg);
+
+    transition:
+        transform .5s var(--ease);
+}
+
+.path-card:hover {
+    transform:
+        translateY(-9px);
+
+    box-shadow:
+        0 30px 65px rgba(23,26,36,.2);
+}
+
+.path-card:hover::after {
+    transform:
+        rotate(0)
+        scale(1.08);
+}
+
+.path-label {
+    opacity: .65;
+
+    text-transform: uppercase;
+
+    letter-spacing: .11em;
+
+    font-size: .72rem;
+
+    font-weight: 900;
+}
+
+.path-card h3 {
+    font-size: 1.45rem;
+
+    margin: 9px 0;
+}
+
+.path-card p {
+    color: rgba(255,255,255,.78);
+
+    font-size: .9rem;
+
+    max-width: 340px;
+}
+
+.path-button {
+    margin-top: 20px;
+
+    padding: 10px 14px;
+
+    border: 1px solid rgba(255,255,255,.22);
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.08);
+
+    color: white;
+
+    font-weight: 800;
+
+    transition:
+        transform .3s var(--ease),
+        background .3s;
+}
+
+.path-button:hover {
+    background:
+        rgba(255,255,255,.18);
+
+    transform:
+        translateY(-3px);
+}
+
+
+/* =========================================================
+   GLOSSARY
+   ========================================================= */
+
+.glossary {
+    background: white;
+}
+
+.glossary-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+}
+
+.term {
+    padding: 18px 20px;
+
+    background: var(--cream);
+
+    border: 1px solid var(--line);
+
+    border-radius: 14px;
+
+    transition:
+        transform .3s var(--ease),
+        background .3s,
+        box-shadow .3s;
+}
+
+.term:hover {
+    transform:
+        translateX(6px);
+
+    background: white;
+
+    box-shadow:
+        var(--shadow-sm);
+}
+
+.term strong {
+    display: block;
+
+    color: var(--indigo);
+
+    margin-bottom: 4px;
+}
+
+.term span {
+    color: var(--slate);
+
+    font-size: .87rem;
+}
+
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+
+.quiz-section {
+    background: var(--ink);
+
+    color: white;
+}
+
+.quiz-section .section-header p {
+    color: #aeb4c2;
+}
+
+.quiz {
+    max-width: 820px;
+
+    margin: auto;
+
+    padding: 32px;
+
+    background: #202432;
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.2);
+}
+
+.quiz-top {
+    display: flex;
+
+    justify-content: space-between;
+
+    color: #aeb4c2;
+
+    font-size: .8rem;
+
+    font-weight: 800;
+
+    margin-bottom: 22px;
+}
+
+.quiz-question {
+    font-size: clamp(1.3rem, 3vw, 2rem);
+
+    line-height: 1.25;
+
+    margin-bottom: 24px;
+}
+
+.quiz-options {
+    display: grid;
+
+    gap: 10px;
+}
+
+.quiz-option {
+    width: 100%;
+
+    text-align: left;
+
+    padding: 15px 17px;
+
+    border-radius: 13px;
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    background: #292e3d;
+
+    color: white;
+
+    transition:
+        transform .3s var(--ease),
+        background .3s,
+        border-color .3s;
+}
+
+.quiz-option:hover {
+    transform:
+        translateX(5px);
+
+    background: #33394a;
+}
+
+.quiz-option.correct {
+    background: #203d30;
+
+    border-color: #4dbb83;
+}
+
+.quiz-option.wrong {
+    background: #442b30;
+
+    border-color: #d87583;
+}
+
+.quiz-feedback {
+    min-height: 28px;
+
+    margin-top: 16px;
+
+    color: #c9ced8;
+
+    font-size: .9rem;
+}
+
+.quiz-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 10px;
+}
+
+.primary-button {
+    border: none;
+
+    background: var(--indigo);
+
+    color: white;
+
+    padding: 12px 18px;
+
+    border-radius: 11px;
+
+    font-weight: 850;
+
+    transition:
+        transform .3s var(--ease),
+        background .3s,
+        box-shadow .3s;
+}
+
+.primary-button:hover {
+    background: var(--soft-indigo);
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 12px 25px rgba(38,59,170,.3);
+}
+
+
+/* =========================================================
+   PLAYGROUND
+   ========================================================= */
+
+.playground {
+    background: var(--cream);
+}
+
+.editor-grid {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 16px;
+}
+
+.editor {
+    background: #151924;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+}
+
+.editor-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 11px 15px;
+
+    color: #aeb4c2;
+
+    background: #1c2130;
+
+    font-size: .78rem;
+}
+
+#codeEditor {
+    width: 100%;
+
+    min-height: 320px;
+
+    resize: vertical;
+
+    border: none;
+
+    outline: none;
+
+    background: #151924;
+
+    color: #f2f4f8;
+
+    padding: 20px;
+
+    font:
+        14px/1.7
+        "JetBrains Mono",
+        "Courier New",
+        monospace;
+}
+
+.editor-actions {
+    display: flex;
+
+    gap: 8px;
+
+    padding: 12px;
+
+    border-top:
+        1px solid rgba(255,255,255,.08);
+}
+
+.run-button,
+.clear-button {
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 9px 13px;
+
+    font-weight: 800;
+}
+
+.run-button {
+    background: var(--indigo);
+
+    color: white;
+}
+
+.clear-button {
+    background: #2b3040;
+
+    color: white;
+}
+
+.output {
+    background: white;
+
+    border: 1px solid var(--line);
+
+    border-radius: 18px;
+
+    overflow: hidden;
+}
+
+.output pre {
+    min-height: 320px;
+
+    padding: 20px;
+
+    white-space: pre-wrap;
+
+    color: var(--ink);
+
+    font:
+        14px/1.7
+        "JetBrains Mono",
+        "Courier New",
+        monospace;
+}
+
+
+/* =========================================================
+   ARTICLE VIEW
+   ========================================================= */
+
+.article-view {
+    display: none;
+
+    padding: 85px 24px 110px;
+
+    background: white;
+}
+
+.article-view.active {
+    display: block;
+
+    animation:
+        articleIn .65s var(--ease);
+}
+
+@keyframes articleIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+.article {
+    max-width: 900px;
+
+    margin: auto;
+}
+
+.back-button {
+    border: none;
+
+    background: var(--cream);
+
+    color: var(--indigo);
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    font-weight: 850;
+
+    margin-bottom: 35px;
+
+    transition:
+        transform .3s var(--ease);
+}
+
+.back-button:hover {
+    transform:
+        translateX(-5px);
+}
+
+.article-category {
+    color: var(--indigo);
+
+    text-transform: uppercase;
+
+    letter-spacing: .13em;
+
+    font-size: .75rem;
+
+    font-weight: 900;
+}
+
+.article h1 {
+    font-size: clamp(2.4rem, 6vw, 5rem);
+
+    line-height: 1;
+
+    letter-spacing: -.065em;
+
+    margin: 10px 0 15px;
+}
+
+.article-intro {
+    max-width: 720px;
+
+    color: var(--slate);
+
+    font-size: 1.1rem;
+
+    margin-bottom: 45px;
+}
+
+.article-block {
+    margin: 40px 0;
+}
+
+.article-block h2 {
+    font-size: 1.5rem;
+
+    letter-spacing: -.03em;
+
+    margin-bottom: 12px;
+}
+
+.article-block p {
+    color: #4f5663;
+}
+
+.code-block {
+    position: relative;
+
+    margin-top: 15px;
+
+    padding: 20px;
+
+    background: #151924;
+
+    color: #eef1f7;
+
+    border-radius: 16px;
+
+    overflow: auto;
+
+    font:
+        14px/1.7
+        "JetBrains Mono",
+        "Courier New",
+        monospace;
+}
+
+.copy-button {
+    position: absolute;
+
+    top: 10px;
+    right: 10px;
+
+    border: 1px solid rgba(255,255,255,.14);
+
+    background: #252b39;
+
+    color: white;
+
+    padding: 7px 10px;
+
+    border-radius: 8px;
+
+    font-size: .75rem;
+}
+
+.copy-button:hover {
+    background: #343c4d;
+}
+
+.under-hood {
+    border-left:
+        4px solid var(--indigo);
+
+    background: var(--cream);
+
+    padding: 22px;
+
+    border-radius:
+        0 16px 16px 0;
+}
+
+.related-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap: 12px;
+
+    margin-top: 15px;
+}
+
+.related-button {
+    text-align: left;
+
+    border: 1px solid var(--line);
+
+    background: var(--cream);
+
+    padding: 17px;
+
+    border-radius: 12px;
+
+    font-weight: 800;
+
+    transition:
+        transform .3s var(--ease),
+        background .3s,
+        color .3s;
+}
+
+.related-button:hover {
+    transform:
+        translateY(-4px);
+
+    background: white;
+
+    color: var(--indigo);
+}
+
+
+/* =========================================================
+   ABOUT
+   ========================================================= */
+
+.about-grid {
+    display: grid;
+
+    grid-template-columns:
+        1.1fr .9fr;
+
+    gap: 30px;
+}
+
+.about-main,
+.about-side {
+    padding: 32px;
+
+    border-radius: 22px;
+
+    border: 1px solid var(--line);
+}
+
+.about-main {
+    background: white;
+}
+
+.about-side {
+    background: var(--indigo);
+
+    color: white;
+}
+
+.about-main h2 {
+    font-size: 2.1rem;
+
+    line-height: 1.1;
+
+    letter-spacing: -.05em;
+
+    margin: 10px 0 15px;
+}
+
+.about-main p {
+    color: var(--slate);
+}
+
+.about-side p {
+    color: rgba(255,255,255,.77);
+}
+
+.about-side h3 {
+    margin-bottom: 10px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    background: var(--ink);
+
+    color: white;
+
+    padding: 55px 24px;
+}
+
+.footer-grid {
+    max-width: 1180px;
+
+    margin: auto;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    flex-wrap: wrap;
+}
+
+.footer-brand {
+    font-size: 1.35rem;
+
+    font-weight: 950;
+}
+
+footer p {
+    color: #9ea5b3;
+
+    font-size: .88rem;
+}
+
+footer a {
+    color: white;
+
+    transition:
+        color .25s;
+}
+
+footer a:hover {
+    color: var(--vanilla);
+}
+
+.footer-bottom {
+    max-width: 1180px;
+
+    margin: 35px auto 0;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid rgba(255,255,255,.1);
+
+    color: #737b89;
+
+    font-size: .78rem;
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast {
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    z-index: 5000;
+
+    background: var(--ink);
+
+    color: white;
+
+    padding: 12px 16px;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.2);
+
+    opacity: 0;
+
+    transform:
+        translateY(30px);
+
+    pointer-events: none;
+
+    transition:
+        opacity .4s var(--ease),
+        transform .4s var(--ease);
+}
+
+.toast.show {
+    opacity: 1;
+
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width: 850px) {
+
+    .menu-button {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+
+        position: absolute;
+
+        top: 76px;
+        left: 0;
+        right: 0;
+
+        padding: 12px 24px;
+
+        background: var(--vanilla);
+
+        border-bottom: 1px solid var(--line);
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .nav-links.open {
+        display: flex;
+
+        animation:
+            articleIn .35s var(--ease);
+    }
+
+    .concept-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .category-grid,
+    .path-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .glossary-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .editor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media(max-width: 560px) {
+
+    section {
+        padding: 72px 18px;
+    }
+
+    .nav {
+        padding: 0 18px;
+    }
+
+    .hero {
+        padding:
+            65px 18px
+            80px;
+    }
+
+    .hero h1 {
+        font-size:
+            clamp(
+                2.6rem,
+                14vw,
+                4rem
+            );
+    }
+
+    .search-box {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .search-button {
+        width: 100%;
+    }
+
+    .concept-grid,
+    .category-grid,
+    .path-grid,
+    .glossary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-header {
+        display: block;
+    }
+
+    .section-header p {
+        margin-top: 12px;
+    }
+
+    .quiz {
+        padding: 22px;
+    }
+
+    .related-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-main,
+    .about-side {
+        padding: 24px;
+    }
+
+    .article-view {
+        padding:
+            65px 18px
+            90px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media(prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+
+        transition-duration: .01ms !important;
+
+        scroll-behavior: auto !important;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     LOADER
+     ======================================================= -->
+
+<div class="loader" id="loader">
+
+    <div class="loader-content">
+
+        <div class="loader-circle"></div>
+
+        <div class="loader-text">
+            INITIALIZING CODEX
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     HEADER
+     ======================================================= -->
+
+<header id="header">
+
+    <nav class="nav">
+
+        <a href="#home" class="logo">
+            CODEX<span>.</span>
+        </a>
+
+        <button
+            class="menu-button"
+            id="menuButton"
+            aria-label="Open navigation menu"
+        >
+            ☰
+        </button>
+
+        <div class="nav-links" id="navLinks">
+
+            <a href="#concepts">
+                Concepts
+            </a>
+
+            <a href="#categories">
+                Categories
+            </a>
+
+            <a href="#paths">
+                Paths
+            </a>
+
+            <a href="#glossary">
+                Glossary
+            </a>
+
+            <a href="#quiz">
+                Quiz
+            </a>
+
+            <a href="#playground">
+                Playground
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<!-- =======================================================
+     MAIN WEBSITE
+     ======================================================= -->
+
+<main id="mainContent">
+
+
+<!-- =======================================================
+     HERO
+     ======================================================= -->
+
+<section class="hero" id="home">
+
+    <div class="hero-grid"></div>
+
+    <div class="hero-glow"></div>
+
+    <div class="hero-glow-two"></div>
+
+
+    <div class="hero-content">
+
+        <div class="badge">
+
+            <span class="badge-dot"></span>
+
+            Programming Knowledge Platform
+
+        </div>
+
+
+        <h1>
+
+            CODEX:
+
+            <span>
+                The Encyclopedia of Code
+            </span>
+
+        </h1>
+
+
+        <div class="subtitle">
+
+            Programming explained from first principles.
+
+        </div>
+
+
+        <div class="creator">
+
+            by Nelson Atelier
+
+        </div>
+
+
+        <p class="hero-description">
+
+            A structured encyclopedia for understanding programming,
+            computer science and software development—not merely
+            memorizing syntax.
+
+        </p>
+
+
+        <div class="search-container">
+
+            <div class="search-box">
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="Search variables, Python, APIs, DOM..."
+                    autocomplete="off"
+                >
+
+                <button
+                    class="search-button"
+                    id="searchButton"
+                >
+                    Search CODEX
+                </button>
+
+            </div>
+
+
+            <div class="quick-searches">
+
+                <button data-search="variables">
+                    Variables
+                </button>
+
+                <button data-search="functions">
+                    Functions
+                </button>
+
+                <button data-search="javascript">
+                    JavaScript
+                </button>
+
+                <button data-search="api">
+                    APIs
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SEARCH RESULTS -->
+
+<div
+    class="search-results"
+    id="searchResults"
+></div>
+
+
+<!-- =======================================================
+     CONCEPTS
+     ======================================================= -->
+
+<section id="concepts">
+
+    <div class="container">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="kicker">
+                    Start here
+                </div>
+
+                <h2>
+                    Build the mental model.
+                </h2>
+
+            </div>
+
+            <p>
+                Core programming concepts arranged around
+                understanding—not memorization.
+            </p>
+
+        </div>
+
+
+        <div
+            class="concept-grid"
+            id="conceptGrid"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     CATEGORIES
+     ======================================================= -->
+
+<section
+    class="categories"
+    id="categories"
+>
+
+    <div class="container">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="kicker">
+                    Explore
+                </div>
+
+                <h2>
+                    Knowledge, organized.
+                </h2>
+
+            </div>
+
+            <p>
+                Move from programming fundamentals into
+                languages, web development, computer science
+                and modern technology.
+            </p>
+
+        </div>
+
+
+        <div class="category-grid">
+
+
+            <article class="category-card reveal">
+
+                <div class="category-number">
+                    01 / FUNDAMENTALS
+                </div>
+
+                <h3>
+                    Programming Fundamentals
+                </h3>
+
+                <p>
+                    Variables, data types, logic, loops,
+                    functions, scope and the concepts
+                    shared across programming languages.
+                </p>
+
+                <button
+                    class="category-button"
+                    onclick="searchFor('variables')"
+                >
+                    Explore fundamentals →
+                </button>
+
+            </article>
+
+
+            <article class="category-card reveal">
+
+                <div class="category-number">
+                    02 / LANGUAGES
+                </div>
+
+                <h3>
+                    Programming Languages
+                </h3>
+
+                <p>
+                    Explore the ideas, syntax and execution
+                    models behind languages such as Python
+                    and JavaScript.
+                </p>
+
+                <button
+                    class="category-button"
+                    onclick="searchFor('python')"
+                >
+                    Explore languages →
+                </button>
+
+            </article>
+
+
+            <article class="category-card reveal">
+
+                <div class="category-number">
+                    03 / WEB
+                </div>
+
+                <h3>
+                    Web Development
+                </h3>
+
+                <p>
+                    HTML, CSS, JavaScript, the DOM, APIs
+                    and the machinery behind interactive
+                    websites.
+                </p>
+
+                <button
+                    class="category-button"
+                    onclick="searchFor('dom')"
+                >
+                    Explore web development →
+                </button>
+
+            </article>
+
+
+            <article class="category-card reveal">
+
+                <div class="category-number">
+                    04 / COMPUTER SCIENCE
+                </div>
+
+                <h3>
+                    Computer Science
+                </h3>
+
+                <p>
+                    Algorithms, data structures, abstraction,
+                    computation, memory and the ideas beneath
+                    software.
+                </p>
+
+                <button
+                    class="category-button"
+                    onclick="showNotice('The Computer Science library is expanding.')"
+                >
+                    Explore computer science →
+                </button>
+
+            </article>
+
+
+            <article class="category-card reveal">
+
+                <div class="category-number">
+                    05 / SOFTWARE
+                </div>
+
+                <h3>
+                    Software Development
+                </h3>
+
+                <p>
+                    APIs, debugging, architecture, testing
+                    and the practices behind reliable software.
+                </p>
+
+                <button
+                    class="category-button"
+                    onclick="searchFor('api')"
+                >
+                    Explore software →
+                </button>
+
+            </article>
+
+
+            <article class="category-card reveal">
+
+                <div class="category-number">
+                    06 / TECHNOLOGY
+                </div>
+
+                <h3>
+                    Modern Technology
+                </h3>
+
+                <p>
+                    Explore the technologies reshaping how
+                    software is built, deployed and experienced.
+                </p>
+
+                <button
+                    class="category-button"
+                    onclick="showNotice('The Modern Technology library is growing.')"
+                >
+                    Explore technology →
+                </button>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     LEARNING PATHS
+     ======================================================= -->
+
+<section id="paths">
+
+    <div class="container">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="kicker">
+                    Learning paths
+                </div>
+
+                <h2>
+                    Don't just browse. Progress.
+                </h2>
+
+            </div>
+
+            <p>
+                Follow a deliberate route from first principles
+                toward building real software.
+            </p>
+
+        </div>
+
+
+        <div class="path-grid">
+
+
+            <article class="path-card reveal">
+
+                <div class="path-label">
+                    Path 01
+                </div>
+
+                <h3>
+                    Programming Foundations
+                </h3>
+
+                <p>
+                    Variables → logic → loops → functions
+                    → deeper mental models.
+                </p>
+
+                <button
+                    class="path-button"
+                    onclick="searchFor('variables')"
+                >
+                    Begin path
+                </button>
+
+            </article>
+
+
+            <article class="path-card reveal">
+
+                <div class="path-label">
+                    Path 02
+                </div>
+
+                <h3>
+                    Web Development
+                </h3>
+
+                <p>
+                    HTML → CSS → JavaScript → DOM
+                    → APIs → applications.
+                </p>
+
+                <button
+                    class="path-button"
+                    onclick="searchFor('html')"
+                >
+                    Begin path
+                </button>
+
+            </article>
+
+
+            <article class="path-card reveal">
+
+                <div class="path-label">
+                    Path 03
+                </div>
+
+                <h3>
+                    Software Builder
+                </h3>
+
+                <p>
+                    Programming → APIs → debugging
+                    → architecture → reliable systems.
+                </p>
+
+                <button
+                    class="path-button"
+                    onclick="searchFor('api')"
+                >
+                    Begin path
+                </button>
+
+            </article>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     GLOSSARY
+     ======================================================= -->
+
+<section
+    class="glossary"
+    id="glossary"
+>
+
+    <div class="container">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="kicker">
+                    Quick reference
+                </div>
+
+                <h2>
+                    The CODEX glossary.
+                </h2>
+
+            </div>
+
+            <p>
+                Short definitions for terms you'll meet
+                repeatedly while learning to code.
+            </p>
+
+        </div>
+
+
+        <div
+            class="glossary-grid"
+            id="glossaryGrid"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     QUIZ
+     ======================================================= -->
+
+<section
+    class="quiz-section"
+    id="quiz"
+>
+
+    <div class="container">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div
+                    class="kicker"
+                    style="color:#9eabff"
+                >
+                    Test yourself
+                </div>
+
+                <h2>
+                    Think like a programmer.
+                </h2>
+
+            </div>
+
+            <p>
+                Turn passive reading into active recall
+                with quick concept checks.
+            </p>
+
+        </div>
+
+
+        <div class="quiz reveal">
+
+            <div class="quiz-top">
+
+                <span id="quizCount">
+                    Question 1 / 5
+                </span>
+
+                <span id="quizScore">
+                    Score: 0
+                </span>
+
+            </div>
+
+
+            <h3
+                class="quiz-question"
+                id="quizQuestion"
+            ></h3>
+
+
+            <div
+                class="quiz-options"
+                id="quizOptions"
+            ></div>
+
+
+            <div
+                class="quiz-feedback"
+                id="quizFeedback"
+            ></div>
+
+
+            <div class="quiz-actions">
+
+                <button
+                    class="primary-button"
+                    id="nextQuestion"
+                >
+                    Next question →
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     PLAYGROUND
+     ======================================================= -->
+
+<section
+    class="playground"
+    id="playground"
+>
+
+    <div class="container">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="kicker">
+                    Experiment
+                </div>
+
+                <h2>
+                    Write. Run. Observe.
+                </h2>
+
+            </div>
+
+            <p>
+                Test small JavaScript ideas without
+                leaving CODEX.
+            </p>
+
+        </div>
+
+
+        <div class="editor-grid reveal">
+
+
+            <div class="editor">
+
+                <div class="editor-header">
+
+                    <span>
+                        JavaScript
+                    </span>
+
+                    <span>
+                        CODEX Playground
+                    </span>
+
+                </div>
+
+
+                <textarea id="codeEditor">const name = "Nelson";
+
+console.log("Hello, " + name);
+
+console.log(2 + 3);</textarea>
+
+
+                <div class="editor-actions">
+
+                    <button
+                        class="run-button"
+                        id="runCode"
+                    >
+                        ▶ Run Code
+                    </button>
+
+                    <button
+                        class="clear-button"
+                        id="clearCode"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="output">
+
+                <div
+                    class="editor-header"
+                    style="
+                        background:#f3f4f7;
+                        color:#687080;
+                    "
+                >
+
+                    <span>
+                        Output
+                    </span>
+
+                    <span id="outputStatus">
+                        Ready
+                    </span>
+
+                </div>
+
+
+                <pre id="codeOutput">Your output will appear here...</pre>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     ABOUT
+     ======================================================= -->
+
+<section id="about">
+
+    <div class="container">
+
+        <div class="about-grid">
+
+
+            <article class="about-main reveal">
+
+                <div class="kicker">
+                    About CODEX
+                </div>
+
+                <h2>
+                    Understand the code.
+                    Understand the machine.
+                </h2>
+
+                <p>
+                    CODEX is an evolving encyclopedia for
+                    programming knowledge.
+                </p>
+
+                <br>
+
+                <p>
+                    Its goal is simple: explain technical
+                    ideas clearly enough that you can reason
+                    about them—not simply copy them.
+                </p>
+
+                <br>
+
+                <p>
+                    Concepts are structured around what they
+                    are, why they matter, how they work,
+                    examples, common mistakes and what
+                    happens under the hood.
+                </p>
+
+            </article>
+
+
+            <aside class="about-side reveal">
+
+                <h3>
+                    Built for curiosity.
+                </h3>
+
+                <p>
+                    From your first variable to the architecture
+                    behind serious applications, CODEX is designed
+                    to grow with the learner.
+                </p>
+
+                <br>
+
+                <p>
+                    <strong>
+                        Created and developed by
+                        Nelson Atelier.
+                    </strong>
+                </p>
+
+            </aside>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =======================================================
+     ARTICLE VIEW
+     ======================================================= -->
+
+<section
+    class="article-view"
+    id="articleView"
+>
+
+    <article class="article">
+
+
+        <button
+            class="back-button"
+            id="backButton"
+        >
+            ← Back to CODEX
+        </button>
+
+
+        <div
+            class="article-category"
+            id="articleCategory"
+        ></div>
+
+
+        <h1 id="articleTitle"></h1>
+
+
+        <p
+            class="article-intro"
+            id="articleIntro"
+        ></p>
+
+
+        <div class="article-block">
+
+            <h2>
+                What is it?
+            </h2>
+
+            <p id="articleWhat"></p>
+
+        </div>
+
+
+        <div class="article-block">
+
+            <h2>
+                Why does it matter?
+            </h2>
+
+            <p id="articleWhy"></p>
+
+        </div>
+
+
+        <div class="article-block">
+
+            <h2>
+                Syntax / Example
+            </h2>
+
+
+            <div class="code-block">
+
+                <button
+                    class="copy-button"
+                    id="copyArticle"
+                >
+                    Copy
+                </button>
+
+                <pre id="articleCode"></pre>
+
+            </div>
+
+        </div>
+
+
+        <div class="article-block">
+
+            <h2>
+                Under the Hood
+            </h2>
+
+            <div class="under-hood">
+
+                <p id="articleHood"></p>
+
+            </div>
+
+        </div>
+
+
+        <div class="article-block">
+
+            <h2>
+                Common mistakes
+            </h2>
+
+            <p id="articleMistakes"></p>
+
+        </div>
+
+
+        <div class="article-block">
+
+            <h2>
+                Related concepts
+            </h2>
+
+            <div
+                class="related-grid"
+                id="relatedConcepts"
+            ></div>
+
+        </div>
+
+
+    </article>
+
+</section>
+
+
+<!-- =======================================================
+     FOOTER
+     ======================================================= -->
+
+<footer>
+
+    <div class="footer-grid">
+
+
+        <div>
+
+            <div class="footer-brand">
+                CODEX: The Encyclopedia of Code
+            </div>
+
+            <p>
+                by Nelson Atelier
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <p>
+                Email:
+                <a href="mailto:sochimaokpara6@gmail.com">
+                    sochimaokpara6@gmail.com
+                </a>
+            </p>
+
+            <p>
+                Phone:
+                <a href="tel:+2347026140321">
+                    +234 702 614 0321
+                </a>
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        © <span id="year"></span>
+        Nelson — CODEX.
+
+        Built to make programming understandable.
+
+    </div>
+
+</footer>
+
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+/* =========================================================
+   CODEX DATABASE
+   ========================================================= */
+
+const concepts = {
+
+    variables: {
+
+        title: "Variables",
+
+        category: "Programming Fundamentals",
+
+        icon: "01",
+
+        intro:
+            "A variable is a named reference to a value your program can work with.",
+
+        what:
+            "Variables give information a name. Instead of repeatedly working with a raw value, a program can store or reference that value through a meaningful identifier.",
+
+        why:
+            "Variables make programs readable, reusable and dynamic. They allow software to remember information and use that information later.",
+
+        code:
+`let age = 16;
+
+const name = "Nelson";
+
+console.log(name, age);`,
+
+        hood:
+            "At the runtime level, values exist somewhere in memory while the language runtime keeps track of how identifiers refer to those values. The exact mechanism depends on the language.",
+
+        mistakes:
+            "Confusing assignment with comparison, choosing unclear names, and changing values that should have remained constant.",
+
+        related: [
+            "data-types",
+            "scope",
+            "functions"
+        ]
+
+    },
+
+
+    "data-types": {
+
+        title: "Data Types",
+
+        category: "Programming Fundamentals",
+
+        icon: "02",
+
+        intro:
+            "A data type describes what kind of value a piece of data represents.",
+
+        what:
+            "Common types include strings, numbers, booleans, arrays and objects. Different programming languages organize and enforce types differently.",
+
+        why:
+            "Knowing the type of a value helps you predict what operations make sense and how the language will treat that value.",
+
+        code:
+`const name = "Nelson";
+
+const age = 16;
+
+const learning = true;`,
+
+        hood:
+            "A runtime needs to know how values should be represented and what operations are valid. Some languages perform more type checking before execution, while others make many type decisions during execution.",
+
+        mistakes:
+            "Assuming every language handles types identically or confusing a value's content with its type.",
+
+        related: [
+            "variables",
+            "if-statements",
+            "python"
+        ]
+
+    },
+
+
+    "if-statements": {
+
+        title: "If Statements",
+
+        category: "Programming Fundamentals",
+
+        icon: "03",
+
+        intro:
+            "Conditional statements allow programs to choose what to do based on a condition.",
+
+        what:
+            "An if statement evaluates a condition. If that condition is true, one block of code runs. Otherwise, another branch can run.",
+
+        why:
+            "Programs need decisions. Conditions allow software to respond differently depending on data or circumstances.",
+
+        code:
+`const age = 16;
+
+if (age >= 18) {
+    console.log("Adult");
+} else {
+    console.log("Under 18");
+}`,
+
+        hood:
+            "The condition is evaluated to a truth value. The runtime then follows one control-flow path and skips the other branch.",
+
+        mistakes:
+            "Using the wrong comparison operator, writing incorrect logical conditions, or misunderstanding which branch will execute.",
+
+        related: [
+            "variables",
+            "loops",
+            "functions"
+        ]
+
+    },
+
+
+    loops: {
+
+        title: "Loops",
+
+        category: "Programming Fundamentals",
+
+        icon: "04",
+
+        intro:
+            "Loops repeat instructions while a condition or iteration rule says they should continue.",
+
+        what:
+            "A loop lets you perform an operation multiple times without writing the same instruction repeatedly.",
+
+        why:
+            "Repetition appears everywhere in software: processing lists, reading data, generating output and performing calculations.",
+
+        code:
+`for (let i = 0; i < 5; i++) {
+    console.log(i);
+}`,
+
+        hood:
+            "A loop repeatedly evaluates its continuation condition and updates its control state. Eventually the condition becomes false, allowing execution to continue beyond the loop.",
+
+        mistakes:
+            "Creating an infinite loop, using the wrong stopping condition, or modifying the loop counter unexpectedly.",
+
+        related: [
+            "if-statements",
+            "variables",
+            "functions"
+        ]
+
+    },
+
+
+    functions: {
+
+        title: "Functions",
+
+        category: "Programming Fundamentals",
+
+        icon: "05",
+
+        intro:
+            "A function is a reusable block of behavior that can receive input and produce a result.",
+
+        what:
+            "Functions package instructions behind a name. They can accept parameters, perform work and return a value.",
+
+        why:
+            "Functions reduce repetition and help divide large problems into smaller, understandable pieces.",
+
+        code:
+`function greet(name) {
+    return "Hello, " + name;
+}
+
+console.log(greet("Nelson"));`,
+
+        hood:
+            "When a function is called, the runtime creates an execution context for that call, handles its parameters and executes its body. The exact implementation varies by language and engine.",
+
+        mistakes:
+            "Forgetting to return a value, confusing parameters with arguments, and making one function responsible for too many unrelated tasks.",
+
+        related: [
+            "variables",
+            "return",
+            "scope"
+        ]
+
+    },
+
+
+    html: {
+
+        title: "HTML",
+
+        category: "Web Development",
+
+        icon: "<>",
+
+        intro:
+            "HTML describes the structure and meaning of content on a web page.",
+
+        what:
+            "HTML uses elements such as headings, paragraphs, links, images and forms to give a document structure and meaning.",
+
+        why:
+            "Browsers need structured content before CSS can style it and JavaScript can make it interactive.",
+
+        code:
+`<h1>CODEX</h1>
+
+<p>The Encyclopedia of Code</p>
+
+<a href="#about">Learn more</a>`,
+
+        hood:
+            "The browser parses HTML into a Document Object Model, creating a tree-like representation that other browser systems can work with.",
+
+        mistakes:
+            "Using elements only for appearance, poor semantic structure, and incorrectly nested markup.",
+
+        related: [
+            "css",
+            "javascript",
+            "dom"
+        ]
+
+    },
+
+
+    css: {
+
+        title: "CSS",
+
+        category: "Web Development",
+
+        icon: "#",
+
+        intro:
+            "CSS controls how HTML content is presented and laid out.",
+
+        what:
+            "CSS uses selectors and declarations to control typography, spacing, color, positioning, animation and responsive layouts.",
+
+        why:
+            "Separating presentation from structure makes websites easier to style, maintain and adapt to different screens.",
+
+        code:
+`body {
+    background: #FFF4D6;
+    color: #171A24;
+}
+
+h1 {
+    color: #263BAA;
+}`,
+
+        hood:
+            "The browser parses CSS rules, determines which selectors match elements, calculates styles and then uses those results during layout and painting.",
+
+        mistakes:
+            "Overusing fixed dimensions, creating specificity conflicts and forgetting responsive behavior.",
+
+        related: [
+            "html",
+            "javascript",
+            "responsive-design"
+        ]
+
+    },
+
+
+    javascript: {
+
+        title: "JavaScript",
+
+        category: "Programming Languages",
+
+        icon: "JS",
+
+        intro:
+            "JavaScript is a programming language widely used to add behavior and interactivity to web pages.",
+
+        what:
+            "JavaScript can manipulate data, make decisions, repeat operations, define functions and interact with browser APIs.",
+
+        why:
+            "JavaScript is one of the core technologies of the modern web and is also used outside browsers.",
+
+        code:
+`const button =
+    document.querySelector("button");
+
+button.addEventListener("click", () => {
+    console.log("Clicked!");
+});`,
+
+        hood:
+            "In a browser, JavaScript is executed by a JavaScript engine. The browser also provides APIs that allow scripts to interact with the DOM, network, timers and other browser capabilities.",
+
+        mistakes:
+            "Confusing JavaScript with Java, ignoring asynchronous behavior and changing the DOM unnecessarily.",
+
+        related: [
+            "dom",
+            "events",
+            "api"
+        ]
+
+    },
+
+
+    python: {
+
+        title: "Python",
+
+        category: "Programming Languages",
+
+        icon: "PY",
+
+        intro:
+            "Python is a general-purpose programming language known for readable syntax and a broad ecosystem.",
+
+        what:
+            "Python supports multiple programming styles and is used in automation, web development, data science, artificial intelligence and many other areas.",
+
+        why:
+            "Its readable syntax makes it useful for learning programming concepts while its ecosystem supports serious software projects.",
+
+        code:
+`name = "Nelson"
+
+for i in range(3):
+    print(name, i)`,
+
+        hood:
+            "In common Python implementations such as CPython, source code is compiled into an intermediate bytecode representation before being executed by the Python virtual machine.",
+
+        mistakes:
+            "Assuming Python behaves exactly like JavaScript, misunderstanding indentation and overlooking mutable versus immutable values.",
+
+        related: [
+            "variables",
+            "loops",
+            "data-types"
+        ]
+
+    },
+
+
+    api: {
+
+        title: "API",
+
+        category: "Software Development",
+
+        icon: "API",
+
+        intro:
+            "An API is a defined interface through which one piece of software can interact with another.",
+
+        what:
+            "APIs specify how software can request information or actions from another system without needing to know its internal implementation.",
+
+        why:
+            "They allow systems to communicate while keeping internal implementation details separated behind an interface or contract.",
+
+        code:
+`fetch("/api/users")
+    .then(response => response.json())
+    .then(data => console.log(data));`,
+
+        hood:
+            "A web API request commonly travels over a network using a protocol such as HTTP. A server receives the request, performs work and returns a response that the client interprets.",
+
+        mistakes:
+            "Treating an API as a database, ignoring errors or authentication, and assuming every API follows the same conventions.",
+
+        related: [
+            "http",
+            "json",
+            "javascript"
+        ]
+
+    },
+
+
+    dom: {
+
+        title: "DOM",
+
+        category: "Web Development",
+
+        icon: "DOM",
+
+        intro:
+            "The Document Object Model is the browser's programmable representation of an HTML document.",
+
+        what:
+            "The DOM represents page elements as objects in a tree structure. JavaScript can read and modify that structure.",
+
+        why:
+            "It is the bridge between JavaScript and the structure of a web page.",
+
+        code:
+`const title =
+    document.querySelector("h1");
+
+title.textContent = "CODEX";`,
+
+        hood:
+            "After parsing HTML, the browser constructs a DOM tree. JavaScript can access nodes, change attributes or text, add elements and respond to events.",
+
+        mistakes:
+            "Trying to access elements before they exist, making unnecessary DOM changes and confusing DOM properties with HTML source.",
+
+        related: [
+            "html",
+            "javascript",
+            "events"
+        ]
+
+    }
+
+};
+
+
+/* =========================================================
+   ALIASES
+   ========================================================= */
+
+const aliases = {
+
+    boolean: "data-types",
+
+    operators: "if-statements",
+
+    arrays: "data-types",
+
+    scope: "functions",
+
+    return: "functions",
+
+    events: "javascript",
+
+    json: "api",
+
+    http: "api",
+
+    fetch: "api",
+
+    "responsive-design": "css"
+
+};
+
+
+/* =========================================================
+   FEATURED CONCEPTS
+   ========================================================= */
+
+const featured = [
+
+    "variables",
+
+    "data-types",
+
+    "if-statements",
+
+    "loops",
+
+    "functions",
+
+    "html",
+
+    "javascript",
+
+    "api"
+
+];
+
+
+/* =========================================================
+   GLOSSARY
+   ========================================================= */
+
+const glossary = [
+
+    [
+        "Algorithm",
+        "A step-by-step procedure for solving a problem."
+    ],
+
+    [
+        "Variable",
+        "A named reference used to work with a value."
+    ],
+
+    [
+        "Function",
+        "A reusable unit of behavior that can receive input."
+    ],
+
+    [
+        "API",
+        "An interface through which software systems communicate."
+    ],
+
+    [
+        "DOM",
+        "The browser's object representation of a document."
+    ],
+
+    [
+        "Boolean",
+        "A value representing true or false."
+    ],
+
+    [
+        "Compiler",
+        "Software that translates source code into another form."
+    ],
+
+    [
+        "Runtime",
+        "The environment in which a program executes."
+    ],
+
+    [
+        "Debugging",
+        "The process of finding and fixing software problems."
+    ]
+
+];
+
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+
+const quiz = [
+
+    {
+        question:
+            "What is the main purpose of a variable?",
+
+        options: [
+            "To name and work with a value",
+            "To style a webpage",
+            "To connect to Wi-Fi",
+            "To compile a computer"
+        ],
+
+        answer: 0,
+
+        explanation:
+            "Variables give values names so programs can work with them."
+    },
+
+    {
+        question:
+            "Which technology primarily describes webpage structure?",
+
+        options: [
+            "CSS",
+            "HTML",
+            "Python",
+            "JSON"
+        ],
+
+        answer: 1,
+
+        explanation:
+            "HTML provides the structure and semantic content of a webpage."
+    },
+
+    {
+        question:
+            "What does a loop primarily provide?",
+
+        options: [
+            "Repetition",
+            "Encryption",
+            "Page styling",
+            "Internet access"
+        ],
+
+        answer: 0,
+
+        explanation:
+            "Loops repeat instructions according to a condition or iteration rule."
+    },
+
+    {
+        question:
+            "What does an API provide?",
+
+        options: [
+            "A programming interface between systems",
+            "A monitor",
+            "A keyboard driver",
+            "A color palette"
+        ],
+
+        answer: 0,
+
+        explanation:
+            "APIs define how software can interact with another system or component."
+    },
+
+    {
+        question:
+            "What does the DOM represent?",
+
+        options: [
+            "A database",
+            "An HTML document as objects",
+            "A programming language",
+            "A server"
+        ],
+
+        answer: 1,
+
+        explanation:
+            "The DOM is the browser's programmable representation of a document."
+    }
+
+];
+
+
+/* =========================================================
+   DOM REFERENCES
+   ========================================================= */
+
+const conceptGrid =
+    document.getElementById("conceptGrid");
+
+const glossaryGrid =
+    document.getElementById("glossaryGrid");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const searchResults =
+    document.getElementById("searchResults");
+
+const articleView =
+    document.getElementById("articleView");
+
+const mainContent =
+    document.getElementById("mainContent");
+
+
+/* =========================================================
+   RENDER FEATURED CONCEPTS
+   ========================================================= */
+
+function renderFeatured() {
+
+    conceptGrid.innerHTML = featured.map(id => {
+
+        const concept = concepts[id];
+
+        return `
+
+            <article class="card reveal">
+
+                <div class="card-icon">
+                    ${concept.icon}
+                </div>
+
+                <h3>
+                    ${concept.title}
+                </h3>
+
+                <p>
+                    ${concept.intro}
+                </p>
+
+                <button
+                    class="card-link"
+                    onclick="openArticle('${id}')"
+                >
+                    Read concept →
+                </button>
+
+            </article>
+
+        `;
+
+    }).join("");
+
+    observeReveals();
+
+}
+
+
+/* =========================================================
+   RENDER GLOSSARY
+   ========================================================= */
+
+function renderGlossary() {
+
+    glossaryGrid.innerHTML =
+        glossary.map(term => {
+
+            return `
+
+                <div class="term reveal">
+
+                    <strong>
+                        ${term[0]}
+                    </strong>
+
+                    <span>
+                        ${term[1]}
+                    </span>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+    observeReveals();
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function runSearch() {
+
+    const query =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+    if (!query) {
+
+        searchResults.innerHTML = "";
+
+        return;
+
+    }
+
+
+    const matches =
+        Object.entries(concepts)
+        .filter(([id, concept]) => {
+
+            const searchable = (
+
+                id +
+                " " +
+                concept.title +
+                " " +
+                concept.category +
+                " " +
+                concept.intro +
+                " " +
+                concept.what
+
+            ).toLowerCase();
+
+            return searchable.includes(query);
+
+        });
+
+
+    if (!matches.length) {
+
+        searchResults.innerHTML = `
+
+            <div class="results-box">
+
+                <strong>
+                    No exact match yet.
+                </strong>
+
+                <p style="color:#687080">
+
+                    Try variables, functions,
+                    JavaScript, Python, HTML,
+                    CSS, API or DOM.
+
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    searchResults.innerHTML = `
+
+        <div class="results-box">
+
+            <div
+                style="
+                    margin-bottom:8px;
+                    font-weight:850;
+                "
+            >
+
+                ${matches.length}
+                result${matches.length > 1 ? "s" : ""}
+
+            </div>
+
+
+            ${matches.map(([id, concept]) => `
+
+                <div
+                    class="result"
+                    onclick="openArticle('${id}')"
+                >
+
+                    <strong>
+                        ${concept.title}
+                    </strong>
+
+                    <small>
+                        ${concept.category}
+                        ·
+                        ${concept.intro}
+                    </small>
+
+                </div>
+
+            `).join("")}
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   SEARCH HELPER
+   ========================================================= */
+
+function searchFor(query) {
+
+    searchInput.value = query;
+
+    runSearch();
+
+    const resultsPosition =
+        searchResults.getBoundingClientRect().top
+        + window.scrollY;
+
+    window.scrollTo({
+
+        top:
+            resultsPosition - 90,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+
+/* =========================================================
+   OPEN ARTICLE
+   ========================================================= */
+
+function openArticle(id) {
+
+    if (aliases[id]) {
+
+        id = aliases[id];
+
+    }
+
+
+    const concept =
+        concepts[id];
+
+
+    if (!concept) {
+
+        showNotice("That concept isn't available yet.");
+
+        return;
+
+    }
+
+
+    mainContent.style.display = "none";
+
+    articleView.classList.add("active");
+
+
+    document.getElementById(
+        "articleCategory"
+    ).textContent =
+        concept.category;
+
+
+    document.getElementById(
+        "articleTitle"
+    ).textContent =
+        concept.title;
+
+
+    document.getElementById(
+        "articleIntro"
+    ).textContent =
+        concept.intro;
+
+
+    document.getElementById(
+        "articleWhat"
+    ).textContent =
+        concept.what;
+
+
+    document.getElementById(
+        "articleWhy"
+    ).textContent =
+        concept.why;
+
+
+    document.getElementById(
+        "articleCode"
+    ).textContent =
+        concept.code;
+
+
+    document.getElementById(
+        "articleHood"
+    ).textContent =
+        concept.hood;
+
+
+    document.getElementById(
+        "articleMistakes"
+    ).textContent =
+        concept.mistakes;
+
+
+    const related =
+        document.getElementById(
+            "relatedConcepts"
+        );
+
+
+    related.innerHTML =
+        concept.related.map(id => {
+
+            const item =
+                concepts[id];
+
+            if (!item) {
+
+                return "";
+
+            }
+
+
+            return `
+
+                <button
+                    class="related-button"
+                    onclick="openArticle('${id}')"
+                >
+
+                    ${item.title}
+                    →
+
+                </button>
+
+            `;
+
+        }).join("");
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+/* =========================================================
+   CLOSE ARTICLE
+   ========================================================= */
+
+function closeArticle() {
+
+    articleView.classList.remove("active");
+
+    mainContent.style.display = "";
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+/* =========================================================
+   COPY ARTICLE CODE
+   ========================================================= */
+
+function copyArticleCode() {
+
+    const code =
+        document.getElementById(
+            "articleCode"
+        ).textContent;
+
+
+    if (
+        navigator.clipboard &&
+        window.isSecureContext
+    ) {
+
+        navigator.clipboard
+            .writeText(code)
+            .then(() => {
+
+                showNotice(
+                    "Code copied to clipboard."
+                );
+
+            });
+
+    } else {
+
+        showNotice(
+            "Select the code and copy it manually."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+
+let currentQuestion = 0;
+
+let score = 0;
+
+let answered = false;
+
+
+function loadQuiz() {
+
+    const question =
+        quiz[currentQuestion];
+
+
+    document.getElementById(
+        "quizCount"
+    ).textContent =
+        `Question ${currentQuestion + 1} / ${quiz.length}`;
+
+
+    document.getElementById(
+        "quizScore"
+    ).textContent =
+        `Score: ${score}`;
+
+
+    document.getElementById(
+        "quizQuestion"
+    ).textContent =
+        question.question;
+
+
+    document.getElementById(
+        "quizFeedback"
+    ).textContent =
+        "";
+
+
+    const options =
+        document.getElementById(
+            "quizOptions"
+        );
+
+
+    options.innerHTML =
+        question.options.map(
+            (option, index) => {
+
+                return `
+
+                    <button
+                        class="quiz-option"
+                        onclick="answerQuiz(${index})"
+                    >
+
+                        ${String.fromCharCode(
+                            65 + index
+                        )}.
+                        ${option}
+
+                    </button>
+
+                `;
+
+            }
+        ).join("");
+
+
+    answered = false;
+
+}
+
+
+/* =========================================================
+   ANSWER QUIZ
+   ========================================================= */
+
+function answerQuiz(index) {
+
+    if (answered) {
+
+        return;
+
+    }
+
+
+    answered = true;
+
+
+    const question =
+        quiz[currentQuestion];
+
+
+    const options =
+        document.querySelectorAll(
+            ".quiz-option"
+        );
+
+
+    options[
+        question.answer
+    ].classList.add(
+        "correct"
+    );
+
+
+    if (
+        index ===
+        question.answer
+    ) {
+
+        score++;
+
+        document.getElementById(
+            "quizFeedback"
+        ).textContent =
+            "Correct. " +
+            question.explanation;
+
+    } else {
+
+        options[index]
+            .classList.add("wrong");
+
+
+        document.getElementById(
+            "quizFeedback"
+        ).textContent =
+            "Not quite. " +
+            question.explanation;
+
+    }
+
+
+    document.getElementById(
+        "quizScore"
+    ).textContent =
+        `Score: ${score}`;
+
+}
+
+
+/* =========================================================
+   NEXT QUIZ QUESTION
+   ========================================================= */
+
+function nextQuizQuestion() {
+
+    if (!answered) {
+
+        showNotice(
+            "Choose an answer first."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        currentQuestion <
+        quiz.length - 1
+    ) {
+
+        currentQuestion++;
+
+        loadQuiz();
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "quizQuestion"
+    ).textContent =
+        `Quiz complete — ${score}/${quiz.length}`;
+
+
+    document.getElementById(
+        "quizOptions"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "quizFeedback"
+    ).textContent =
+        "Review the concepts and try again whenever you want.";
+
+
+    const next =
+        document.getElementById(
+            "nextQuestion"
+        );
+
+
+    next.textContent =
+        "Restart quiz ↻";
+
+
+    next.onclick =
+        restartQuiz;
+
+}
+
+
+function restartQuiz() {
+
+    currentQuestion = 0;
+
+    score = 0;
+
+    const next =
+        document.getElementById(
+            "nextQuestion"
+        );
+
+    next.textContent =
+        "Next question →";
+
+    next.onclick =
+        nextQuizQuestion;
+
+    loadQuiz();
+
+}
+
+
+/* =========================================================
+   PLAYGROUND
+   ========================================================= */
+
+function runJavaScript() {
+
+    const code =
+        document.getElementById(
+            "codeEditor"
+        ).value;
+
+
+    const output =
+        document.getElementById(
+            "codeOutput"
+        );
+
+
+    const logs = [];
+
+
+    const fakeConsole = {
+
+        log: (...args) => {
+
+            logs.push(
+                args
+                    .map(value => {
+
+                        if (
+                            typeof value ===
+                            "object"
+                        ) {
+
+                            try {
+
+                                return JSON.stringify(
+                                    value
+                                );
+
+                            } catch {
+
+                                return String(
+                                    value
+                                );
+
+                            }
+
+                        }
+
+                        return String(value);
+
+                    })
+                    .join(" ")
+            );
+
+        },
+
+
+        warn: (...args) => {
+
+            logs.push(
+                "⚠ " +
+                args.join(" ")
+            );
+
+        },
+
+
+        error: (...args) => {
+
+            logs.push(
+                "✖ " +
+                args.join(" ")
+            );
+
+        }
+
+    };
+
+
+    try {
+
+        const execute =
+            new Function(
+                "console",
+                code
+            );
+
+
+        execute(fakeConsole);
+
+
+        output.textContent =
+            logs.length
+                ? logs.join("\n")
+                : "Code ran successfully with no console output.";
+
+
+        document.getElementById(
+            "outputStatus"
+        ).textContent =
+            "Executed";
+
+
+    } catch (error) {
+
+        output.textContent =
+            "Error: " +
+            error.message;
+
+
+        document.getElementById(
+            "outputStatus"
+        ).textContent =
+            "Error";
+
+    }
+
+}
+
+
+/* =========================================================
+   CLEAR PLAYGROUND
+   ========================================================= */
+
+function clearPlayground() {
+
+    document.getElementById(
+        "codeEditor"
+    ).value = "";
+
+
+    document.getElementById(
+        "codeOutput"
+    ).textContent =
+        "Your output will appear here...";
+
+
+    document.getElementById(
+        "outputStatus"
+    ).textContent =
+        "Ready";
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer;
+
+
+function showNotice(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(() => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        }, 2400);
+
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
+
+function observeReveals() {
+
+    const elements =
+        document.querySelectorAll(
+            ".reveal:not(.observed)"
+        );
+
+
+    if (
+        !("IntersectionObserver" in window)
+    ) {
+
+        elements.forEach(element => {
+
+            element.classList.add(
+                "visible"
+            );
+
+        });
+
+        return;
+
+    }
+
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (
+                        entry.isIntersecting
+                    ) {
+
+                        entry.target.classList.add(
+                            "visible"
+                        );
+
+
+                        observer.unobserve(
+                            entry.target
+                        );
+
+                    }
+
+                });
+
+            },
+
+            {
+                threshold: .12
+            }
+
+        );
+
+
+    elements.forEach(element => {
+
+        element.classList.add(
+            "observed"
+        );
+
+        observer.observe(
+            element
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+
+        renderFeatured();
+
+
+        renderGlossary();
+
+
+        loadQuiz();
+
+
+        observeReveals();
+
+
+        document.getElementById(
+            "year"
+        ).textContent =
+            new Date().getFullYear();
+
+
+        document.getElementById(
+            "searchButton"
+        ).addEventListener(
+            "click",
+            runSearch
+        );
+
+
+        searchInput.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    runSearch();
+
+                }
+
+            }
+        );
+
+
+        document
+            .querySelectorAll(
+                "[data-search]"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        searchFor(
+                            button.dataset.search
+                        );
+
+                    }
+                );
+
+            });
+
+
+        document.getElementById(
+            "backButton"
+        ).addEventListener(
+            "click",
+            closeArticle
+        );
+
+
+        document.getElementById(
+            "copyArticle"
+        ).addEventListener(
+            "click",
+            copyArticleCode
+        );
+
+
+        document.getElementById(
+            "nextQuestion"
+        ).addEventListener(
+            "click",
+            nextQuizQuestion
+        );
+
+
+        document.getElementById(
+            "runCode"
+        ).addEventListener(
+            "click",
+            runJavaScript
+        );
+
+
+        document.getElementById(
+            "clearCode"
+        ).addEventListener(
+            "click",
+            clearPlayground
+        );
+
+
+        document.getElementById(
+            "menuButton"
+        ).addEventListener(
+            "click",
+            () => {
+
+                document.getElementById(
+                    "navLinks"
+                ).classList.toggle(
+                    "open"
+                );
+
+            }
+        );
+
+
+        document
+            .querySelectorAll(
+                ".nav-links a"
+            )
+            .forEach(link => {
+
+                link.addEventListener(
+                    "click",
+                    () => {
+
+                        document.getElementById(
+                            "navLinks"
+                        ).classList.remove(
+                            "open"
+                        );
+
+                    }
+                );
+
+            });
+
+
+        window.addEventListener(
+            "scroll",
+            () => {
+
+                document
+                    .getElementById(
+                        "header"
+                    )
+                    .classList.toggle(
+                        "scrolled",
+                        window.scrollY > 10
+                    );
+
+            }
+        );
+
+
+        setTimeout(
+            () => {
+
+                document
+                    .getElementById(
+                        "loader"
+                    )
+                    .classList.add(
+                        "hide"
+                    );
+
+            },
+            800
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
